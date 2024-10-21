@@ -1,7 +1,11 @@
 import RegisterService from "@/Services/Manager/Register";
-import * as React from "react"
+import OTPService from "@/Services/Manager/OTP"
+import { useEffect, useState } from "react"
 import * as Yup from "yup"
 import { toast } from "sonner"
+import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import VerifyService from "@/Services/Manager/Verify";
 interface Values {
     name: string;
     email: string;
@@ -20,32 +24,59 @@ export const SignupSchema = Yup.object().shape({
 })
 
 export default function useRegister() {
-    const [showPassword, setShowPassword] = React.useState(false)
-    const [showConfirmPassword, setShowConfirmPassword] = React.useState(false)
-    const [otpSent, setOtpSent] = React.useState(false)
-    const [otp, setOtp] = React.useState("")
-    const [profileImage, setProfileImage] = React.useState<File | null>(null)
-    const [profilePreview, setProfilePreview] = React.useState<string | null>(null)
+    const [showPassword, setShowPassword] = useState(false)
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+    const [profileImage, setProfileImage] = useState<File | null>(null)
+    const [profilePreview, setProfilePreview] = useState<string | null>(null)
+    const [id, setId] = useState<string | null>(null)
+    const [otp, setOtp] = useState("")
+    const navigate = useNavigate()
 
+    async function Verify() {
+        const token = Cookies.get('token');
+        if (token) {
+            try {
+                await VerifyService()
+                navigate("/manager")
+            } catch (e) {
+                navigate("/manager/login")
+
+            }
+        }
+    }
+
+    useEffect(() => {
+        Verify()
+    }, [])
     const handleSignup = async (values: Values) => {
         let id = toast.loading("Loading Please Wait")
-        alert(id)
         try {
-            const response = await RegisterService({...values,profile:profileImage} as any);
-            console.log(response)
+            const response = await RegisterService({ ...values, profile: profileImage } as any);
             toast.success(response.message, {
                 id
             })
-        } catch (e:any) {
-            toast.success(e.message, {
+            setId(response.id)
+        } catch (e: any) {
+            toast.error(e.message, {
                 id
             })
         }
     }
 
-    const verifyOtp = () => {
-        console.log("OTP verified:", otp)
-        setOtpSent(false)
+    const verifyOtp = async () => {
+        const idx = toast.loading("Loading Please Wait")
+        try {
+            if (otp.length < 6) return toast.error("Invalid OTP", { id: idx });
+            if (id) {
+                const response = await OTPService({ otp, _id: id } as any);
+                toast.success(response.message, { id: idx })
+            }
+            navigate("/manager/login")
+        } catch (e: any) {
+            toast.error(e.message, {
+                id: idx
+            })
+        }
     }
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,8 +96,8 @@ export default function useRegister() {
         setShowPassword,
         showConfirmPassword,
         setShowConfirmPassword,
-        otpSent,
-        setOtpSent,
+        id,
+        setId,
         otp,
         setOtp,
         profileImage,

@@ -6,6 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import LoginService from "@/Services/Manager/Login"
+import { toast } from "sonner"
+import { useNavigate } from "react-router-dom"
+import VerifyService from "@/Services/Manager/Verify"
+import Cookies from "js-cookie"
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -15,9 +20,24 @@ const LoginSchema = Yup.object().shape({
 
 export default function LoginComponent() {
   const [showPassword, setShowPassword] = React.useState(false)
+  const navigate = useNavigate()
+  async function Verify() {
+    const token = Cookies.get('token');
+    if (token) {
+      try {
+        await VerifyService()
+        navigate("/manager")
+      } catch (e) {
+        navigate("/manager/login")
 
+      }
+    }
+  }
+  React.useEffect(() => {
+    Verify()
+  }, [])
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full max-w-md mt-10 mx-auto">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-blue dark:text-blue-light">Login</CardTitle>
         <CardDescription>Enter your credentials to access your account</CardDescription>
@@ -26,9 +46,15 @@ export default function LoginComponent() {
         <Formik
           initialValues={{ email: "", password: "" }}
           validationSchema={LoginSchema}
-          onSubmit={(values, actions) => {
-            console.log(values)
-            actions.setSubmitting(false)
+          onSubmit={async (values) => {
+            const id = toast.loading("Loading Please Wait");
+            try {
+              const res = await LoginService(values as any)
+              toast.success(res.message, { id })
+              navigate("/manager")
+            } catch (e: any) {
+              toast.error(e.message, { id })
+            }
           }}
         >
           {({ errors, touched }) => (

@@ -14,14 +14,14 @@ export default function RegisterComponent() {
         setShowPassword,
         showConfirmPassword,
         setShowConfirmPassword,
-        otpSent,
-        setOtpSent,
         otp,
         setOtp,
         profilePreview,
         handleSignup,
         verifyOtp,
         handleImageChange,
+        id,
+        setId
     } = useRegister()
 
     return (
@@ -136,7 +136,7 @@ export default function RegisterComponent() {
                         )}
                     </Formik>
                 </CardContent>
-                <Dialog open={otpSent} onOpenChange={setOtpSent}>
+                <Dialog open={id ? true : false} onOpenChange={()=>setId(null)}>
                     <DialogContent>
                         <DialogHeader>
                             <DialogTitle>Enter OTP</DialogTitle>

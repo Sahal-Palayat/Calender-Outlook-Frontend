@@ -1,53 +1,23 @@
-import * as React from "react"
 import { Formik, Form, Field } from "formik"
-import * as Yup from "yup"
 import { Eye, EyeOff, Upload } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import useAddEmployee from "@/Hooks/Manager/useAddEmployee"
 
-const AddEmployeeSchema = Yup.object().shape({
-  name: Yup.string().required("Required"),
-  email: Yup.string().email("Invalid email").required("Required"),
-  password: Yup.string().min(8, "Too Short!").required("Required"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password")], "Passwords must match")
-    .required("Required"),
-  mobile: Yup.string().matches(/^[0-9]{10}$/, "Invalid mobile number").required("Required"),
-  profileImage: Yup.mixed().required("Required"),
-})
 
 export default function AddEmployeeComponent() {
-  const [showPassword, setShowPassword] = React.useState(false)
-  const [previewImage, setPreviewImage] = React.useState<string | null>(null)
-
-  const handleSubmit = (values: any) => {
-    console.log("Add Employee:", values)
-    // Implement add employee logic here
-  }
-
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>, setFieldValue: (field: string, value: any) => void) => {
-    const file = event.currentTarget.files?.[0]
-    if (file) {
-      setFieldValue("profileImage", file)
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setPreviewImage(reader.result as string)
-      }
-      reader.readAsDataURL(file)
-    }
-  }
-
+  const { AddEmployeeSchema, handleImageChange, handleSubmit, setShowPassword, showPassword, previewImage } = useAddEmployee()
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full max-w-2xl mt-5 mx-auto">
       <CardHeader>
         <CardTitle>Add Employee</CardTitle>
         <CardDescription>Enter employee details to create a new account</CardDescription>
       </CardHeader>
       <CardContent>
         <Formik
-          initialValues={{ name: "", email: "", password: "", confirmPassword: "", mobile: "", profileImage: null }}
+          initialValues={{ name: "", email: "", password: "", confirmPassword: "", profileImage: null }}
           validationSchema={AddEmployeeSchema}
           onSubmit={handleSubmit}
         >
@@ -98,11 +68,6 @@ export default function AddEmployeeComponent() {
                 {errors.confirmPassword && touched.confirmPassword ? (
                   <div className="text-red text-sm mt-1">{errors.confirmPassword}</div>
                 ) : null}
-              </div>
-              <div>
-                <Label htmlFor="mobile">Mobile</Label>
-                <Field name="mobile" as={Input} id="mobile" placeholder="1234567890" />
-                {errors.mobile && touched.mobile ? <div className="text-red text-sm mt-1">{errors.mobile}</div> : null}
               </div>
               <div>
                 <Label htmlFor="profileImage">Profile Image</Label>

@@ -3,9 +3,9 @@ import axiosInstance from "../Axios";
 import Cookies from "js-cookie";
 import { AxiosResponse } from "axios";
 
-export default async function LoginService({ email, password }: IUser): Promise<{ message: string; }> {
+export default async function EmployeeLoginService({ email, password }: IUser): Promise<{ message: string; }> {
     try {
-        const response = await axiosInstance.post("/auth/manager/login", { email, password }) as AxiosResponse<{
+        const response = await axiosInstance.post("/auth/employee/login", { email, password }) as AxiosResponse<{
             message: string;
             user: IUser;
             token: string;

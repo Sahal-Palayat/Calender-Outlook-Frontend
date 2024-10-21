@@ -21,11 +21,11 @@ export default function DarkModeProvider({ children }: { children: React.ReactNo
     } else {
       document.documentElement.classList.remove('dark')
     }
-    localStorage.setItem('darkMode', isDarkMode.toString())
   }, [isDarkMode])
 
   const toggleDarkMode = () => {
     setIsDarkMode(prevMode => !prevMode)
+    localStorage.setItem('darkMode', isDarkMode ? true.toString() : false.toString())
   }
 
   return (
