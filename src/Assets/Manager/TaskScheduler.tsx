@@ -1,5 +1,5 @@
 import { format, isSameDay, parseISO } from "date-fns"
-import { ChevronLeft, ChevronRight, Delete, Trash2 } from "lucide-react"
+import { ChevronLeft, ChevronRight, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import useTaskCalendar, { timeSlots } from "@/Hooks/Manager/useTaskCalendar"
 import EditTaskDialog from "./EditTasks"

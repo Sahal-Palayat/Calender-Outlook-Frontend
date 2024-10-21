@@ -53,6 +53,7 @@ export default function useTaskCalendar() {
         const id = toast.loading("Editing Please Wait")
         try {
             const res = await DeleteTaskService(idx)
+            setTasks((prev) => prev.filter((value) => value._id!== idx))
             toast.success(res.message, { id })
         } catch (e: any) {
             toast.error(e.message, { id })

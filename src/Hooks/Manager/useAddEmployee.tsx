@@ -5,7 +5,7 @@ import VerifyService from "@/Services/Manager/Verify"
 import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 import Cookies from "js-cookie"
-import { FormikHelpers, FormikProps } from "formik"
+import { FormikHelpers } from "formik"
 
 const AddEmployeeSchema = Yup.object().shape({
     name: Yup.string().required("Required"),

@@ -1,14 +1,13 @@
-import { Pencil, Trash2, Search } from "lucide-react"
+import { Trash2, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import useManage from "@/Hooks/Manager/useManageEmployee"
 import { useNavigate } from "react-router-dom"
 
 
 export default function EmployeeManagement() {
-    const { editingEmployee, filteredEmployees, handleDelete, handleEdit, searchTerm, setEditingEmployee, setSearchTerm } = useManage()
+    const { filteredEmployees, handleDelete,  searchTerm,  setSearchTerm } = useManage()
     const navigate = useNavigate()
 
     return (
@@ -47,9 +46,6 @@ export default function EmployeeManagement() {
                             <TableCell>{employee.email}</TableCell>
                             <TableCell>{employee.position || "Developer"}</TableCell>
                             <TableCell>
-                                <Button variant="ghost" size="icon" onClick={() => handleEdit(employee)}>
-                                    <Pencil className="h-4 w-4" />
-                                </Button>
                                 <Button variant="ghost" size="icon" onClick={() => handleDelete(employee._id)}>
                                     <Trash2 className="h-4 w-4 text-red" />
                                 </Button>
@@ -58,20 +54,6 @@ export default function EmployeeManagement() {
                     ))}
                 </TableBody>
             </Table>
-
-            <Dialog open={editingEmployee !== null} onOpenChange={() => setEditingEmployee(null)}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Edit Employee</DialogTitle>
-                    </DialogHeader>
-                    {/* {editingEmployee && (
-                        // <AddEmployee
-                        //     initialValues={editingEmployee}
-                        //     onSubmit={(values) => handleSaveEdit({ ...editingEmployee, ...values })}
-                        // />
-                    )} */}
-                </DialogContent>
-            </Dialog>
         </div>
     )
 }

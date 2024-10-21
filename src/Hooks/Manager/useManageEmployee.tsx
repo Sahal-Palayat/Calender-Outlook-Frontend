@@ -1,8 +1,10 @@
 import IUser from "@/Interfaces/Auth"
+import DeleteEmployeeService from "@/Services/Manager/DeleteEmployee"
 import GetEmployeeService from "@/Services/Manager/GetEmployee"
 import Cookies from "js-cookie"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { toast } from "sonner"
 
 export default function useManage() {
     const [employees, setEmployees] = useState<IUser[]>([])
@@ -32,19 +34,19 @@ export default function useManage() {
         Verify()
     }, [])
 
-    const handleEdit = (employee: any) => {
-        // setEditingEmployee(employee)
-    }
 
-    const handleDelete = (id: string) => {
-        // setEmployees(employees.filter((employee) => employee._id !== id))
-    }
 
-    const handleSaveEdit = (updatedEmployee: any) => {
-        // setEmployees(employees.map((emp) => (emp.id === updatedEmployee.id ? updatedEmployee : emp)))
-        setEditingEmployee(null)
+    const handleDelete = async (idx: string) => {
+        const id = toast.loading("Removing user")
+        try {
+            const res = await DeleteEmployeeService(idx)
+            toast.success(res.message, { id })
+            setEmployees(employees.filter((employee) => employee._id !== idx))
+        } catch (e: any) {
+            toast.error(e.message, { id })
+        }
     }
-    return { employees, handleEdit, handleDelete, handleSaveEdit, isAddingEmployee, editingEmployee, setEditingEmployee, setIsAddingEmployee, filteredEmployees, searchTerm, setSearchTerm }
+    return { employees, handleDelete, isAddingEmployee, editingEmployee, setEditingEmployee, setIsAddingEmployee, filteredEmployees, searchTerm, setSearchTerm }
 }
 
 

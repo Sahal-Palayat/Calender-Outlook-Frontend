@@ -1,14 +1,8 @@
 import { useEffect, useState } from "react";
 import { addDays, startOfWeek } from "date-fns";
-import IUser from "@/Interfaces/Auth";
-import ITasks, { IUploadTasks } from "@/Interfaces/Task";
+import ITasks from "@/Interfaces/Task";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { toast } from "sonner";
-import AddTaskService from "@/Services/Manager/AddTask";
-import GetTaskService from "@/Services/Manager/GetTask";
-import EditTaskService from "@/Services/Manager/EditTask";
-import DeleteTaskService from "@/Services/Manager/DeleteTask";
 import EmployeeGetTaskService from "@/Services/Employee/GetTasks";
 
 export const priorityOptions = [
@@ -42,8 +36,8 @@ export default function useTaskCalendar() {
         } else navigate('employee/login')
     }
 
-    async function updateTaskStatus(id:string,status:string) {
-
+    async function updateTaskStatus(_id:string,_status:string) {
+        
     }
 
     useEffect(() => {
